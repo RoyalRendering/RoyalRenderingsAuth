@@ -10,8 +10,13 @@ REDIRECT_URI = "https://royalrenderings.com/oauth/callback"
 TOKEN_URL = "https://www.patreon.com/api/oauth2/token"
 MEMBERSHIP_URL = "https://www.patreon.com/api/oauth2/v2/members"
 
-# Step 1: Redirect user to Patreon
-@app.route("/login")
+# Root route
+@app.route('/')
+def home():
+    return "Welcome to the Patreon OAuth Backend!"
+
+# Login route
+@app.route('/login')
 def login():
     patreon_auth_url = (
         f"https://www.patreon.com/oauth2/authorize?response_type=code"
@@ -19,8 +24,8 @@ def login():
     )
     return redirect(patreon_auth_url)
 
-# Step 2: Handle OAuth Callback
-@app.route("/oauth/callback")
+# OAuth callback route
+@app.route('/oauth/callback')
 def oauth_callback():
     code = request.args.get("code")
     if not code:
@@ -54,7 +59,7 @@ def oauth_callback():
     membership_data = membership_response.json()
     return jsonify({"message": "Login successful!", "membership_data": membership_data})
 
-
-# Start the server
+# Run the app
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=True)
+
