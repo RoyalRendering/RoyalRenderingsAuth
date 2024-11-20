@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Success</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; }
+        h1 { color: #4CAF50; }
+        ul { list-style-type: none; padding: 0; }
+        li { background: #f4f4f4; margin: 10px 0; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Welcome Back!</h1>
+    <p>Thank you for being a Patreon supporter. Here are your active memberships:</p>
+    <ul>
+        {% for tier in tiers %}
+            <li>{{ tier }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
