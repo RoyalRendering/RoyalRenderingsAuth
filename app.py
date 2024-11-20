@@ -25,7 +25,6 @@ def login():
     )
     return redirect(patreon_auth_url)
 
-
 # OAuth callback route
 @app.route('/oauth/callback')
 def oauth_callback():
@@ -62,12 +61,14 @@ def oauth_callback():
     if user_response.status_code != 200:
         return render_template("error.html", message="Failed to validate membership.")
 
+    # Log the API response for debugging
     user_data = user_response.json()
+    print("Patreon API Response:", user_data)
 
     # Extract user info
     user_info = user_data.get("data", {})
-    user_name = user_info.get("attributes", {}).get("full_name", "Unknown User")
-    user_profile_pic = user_info.get("attributes", {}).get("image_url", "")
+    user_name = user_info.get("attributes", {}).get("full_name", "Supporter")
+    user_profile_pic = user_info.get("attributes", {}).get("image_url", "/static/default-profile.png")
     memberships = user_data.get("included", [])
 
     # Extract active memberships
@@ -77,21 +78,16 @@ def oauth_callback():
         if membership.get("attributes", {}).get("currently_entitled_tier")
     ]
 
-    # Pass the data to the success page
-    return render_template(
-        "success.html",
-        user_name=user_name,
-        user_profile_pic=user_profile_pic,
-        active_tiers=active_tiers,
-    )
-
     if active_tiers:
-        return render_template("success.html", tiers=active_tiers)
+        return render_template(
+            "success.html",
+            user_name=user_name,
+            user_profile_pic=user_profile_pic,
+            active_tiers=active_tiers,
+        )
     else:
         return render_template("error.html", message="No active memberships found.")
 
 # Run the app
 if __name__ == "__main__":
     app.run(debug=True)
-
-
