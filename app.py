@@ -6,7 +6,7 @@ app = Flask(__name__)
 # Configuration
 CLIENT_ID = "QsFCmQAx_o1wLtiCXrYWlEFlWl6ZLHqXxsCBhoqVcz1Pp2Jubhh5-2DsnpjR_wWX"
 CLIENT_SECRET = "ahKXz1L_zMVqIdUk6huaNH4tjM3fBiLfmDz0a5_EVJYtkv_IDhI0A4DGxtvYv9Ph"
-REDIRECT_URI = "https://your-service-name.onrender.com/oauth/callback"
+REDIRECT_URI = "https://royalrenderingsauth.onrender.com/oauth/callback"
 TOKEN_URL = "https://www.patreon.com/api/oauth2/token"
 MEMBERSHIP_URL = "https://www.patreon.com/api/oauth2/v2/identity?include=memberships"
 
