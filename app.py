@@ -28,6 +28,7 @@ def login():
 # OAuth callback route
 @app.route('/oauth/callback')
 def oauth_callback():
+    # Get the authorization code from the query parameters
     code = request.args.get("code")
     if not code:
         return "Error: No authorization code provided.", 400
@@ -62,10 +63,21 @@ def oauth_callback():
 
     membership_data = membership_response.json()
 
-    # Return a success message with membership details
+    # Extract relevant membership info
+    user_id = membership_data["data"]["id"]
+    memberships = membership_data.get("included", [])
+
+    active_memberships = []
+    for membership in memberships:
+        membership_id = membership["id"]
+        membership_type = membership["type"]
+        active_memberships.append({"id": membership_id, "type": membership_type})
+
+    # Return a cleaner response
     return jsonify({
         "message": "Login successful!",
-        "membership_data": membership_data,
+        "user_id": user_id,
+        "active_memberships": active_memberships,
     })
 
 # Run the app
