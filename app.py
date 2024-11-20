@@ -25,6 +25,7 @@ def login():
     )
     return redirect(patreon_auth_url)
 
+
 # OAuth callback route
 @app.route('/oauth/callback')
 def oauth_callback():
