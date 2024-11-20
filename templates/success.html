@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Success</title>
+    <title>Welcome!</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; }
-        h1 { color: #4CAF50; }
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        img { border-radius: 50%; width: 150px; height: 150px; }
         ul { list-style-type: none; padding: 0; }
         li { background: #f4f4f4; margin: 10px 0; padding: 10px; border-radius: 5px; }
+        h1 { color: #4CAF50; }
     </style>
 </head>
 <body>
-    <h1>Welcome Back!</h1>
+    <img src="{{ user_profile_pic }}" alt="Profile Picture">
+    <h1>Welcome, {{ user_name }}!</h1>
     <p>Thank you for being a Patreon supporter. Here are your active memberships:</p>
     <ul>
-        {% for tier in tiers %}
+        {% for tier in active_tiers %}
             <li>{{ tier }}</li>
         {% endfor %}
     </ul>
