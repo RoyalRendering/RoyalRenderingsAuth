@@ -54,22 +54,35 @@ def oauth_callback():
     if not access_token:
         return render_template("error.html", message="Access token not found.")
 
-    # Validate membership
+    # Fetch user identity and memberships
     headers = {"Authorization": f"Bearer {access_token}"}
-    membership_response = requests.get(MEMBERSHIP_URL, headers=headers)
+    user_response = requests.get(MEMBERSHIP_URL, headers=headers)
 
-    if membership_response.status_code != 200:
+    if user_response.status_code != 200:
         return render_template("error.html", message="Failed to validate membership.")
 
-    membership_data = membership_response.json()
+    user_data = user_response.json()
 
-    # Extract relevant membership info
-    memberships = membership_data.get("included", [])
+    # Extract user info
+    user_info = user_data.get("data", {})
+    user_name = user_info.get("attributes", {}).get("full_name", "Unknown User")
+    user_profile_pic = user_info.get("attributes", {}).get("image_url", "")
+    memberships = user_data.get("included", [])
+
+    # Extract active memberships
     active_tiers = [
-        membership.get("attributes", {}).get("currently_entitled_tier", {}).get("title")
+        membership.get("attributes", {}).get("currently_entitled_tier", {}).get("title", "No Tier")
         for membership in memberships
         if membership.get("attributes", {}).get("currently_entitled_tier")
     ]
+
+    # Pass the data to the success page
+    return render_template(
+        "success.html",
+        user_name=user_name,
+        user_profile_pic=user_profile_pic,
+        active_tiers=active_tiers,
+    )
 
     if active_tiers:
         return render_template("success.html", tiers=active_tiers)
