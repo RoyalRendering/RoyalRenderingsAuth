@@ -6,7 +6,7 @@ app = Flask(__name__)
 # Configuration
 CLIENT_ID = "QsFCmQAx_o1wLtiCXrYWlEFlWl6ZLHqXxsCBhoqVcz1Pp2Jubhh5-2DsnpjR_wWX"
 CLIENT_SECRET = "ahKXz1L_zMVqIdUk6huaNH4tjM3fBiLfmDz0a5_EVJYtkv_IDhI0A4DGxtvYv9Ph"
-REDIRECT_URI = "https://royalrenderings.com/oauth/callback"
+REDIRECT_URI = "https://your-service-name.onrender.com/oauth/callback"
 TOKEN_URL = "https://www.patreon.com/api/oauth2/token"
 MEMBERSHIP_URL = "https://www.patreon.com/api/oauth2/v2/members"
 
@@ -27,11 +27,12 @@ def login():
 # OAuth callback route
 @app.route('/oauth/callback')
 def oauth_callback():
+    # Get the authorization code from the query parameters
     code = request.args.get("code")
     if not code:
-        return jsonify({"error": "Authorization code not provided."}), 400
+        return "Error: No authorization code provided.", 400
 
-    # Exchange code for access token
+    # Exchange the code for an access token
     token_response = requests.post(
         TOKEN_URL,
         data={
@@ -44,22 +45,30 @@ def oauth_callback():
     )
 
     if token_response.status_code != 200:
-        return jsonify({"error": "Failed to retrieve access token."}), 400
+        return "Error: Failed to retrieve access token.", 400
 
+    # Extract the access token
     token_data = token_response.json()
     access_token = token_data.get("access_token")
 
-    # Check membership status
+    if not access_token:
+        return "Error: Access token not found.", 400
+
+    # Use the access token to get the user's membership info
     headers = {"Authorization": f"Bearer {access_token}"}
     membership_response = requests.get(MEMBERSHIP_URL, headers=headers)
 
     if membership_response.status_code != 200:
-        return jsonify({"error": "Failed to validate membership."}), 400
+        return "Error: Failed to validate membership.", 400
 
     membership_data = membership_response.json()
-    return jsonify({"message": "Login successful!", "membership_data": membership_data})
+
+    # Return a success message with membership details
+    return jsonify({
+        "message": "Login successful!",
+        "membership_data": membership_data,
+    })
 
 # Run the app
 if __name__ == "__main__":
     app.run(debug=True)
-
